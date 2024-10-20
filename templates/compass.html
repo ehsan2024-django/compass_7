@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قطب‌نمای مدرن</title>
+    <link href="https://fonts.googleapis.com/css?family=Iran+Sans:400,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --needle-rotation: {{needle_rotation}}deg;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/compass.css' %}">
+</head>
+<body>
+    <div class="compass">
+        <div class="direction n"><span>شمال</span></div>
+        <div class="direction e"><span>شرق</span></div>
+        <div class="direction s"><span>جنوب</span></div>
+        <div class="direction w"><span>غرب</span></div>
+        <div class="needle"></div>
+    </div>
+    <script src="{% static 'js/compass.js' %}"></script>
+</body>
+</html>
