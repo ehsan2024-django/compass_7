@@ -134,14 +134,16 @@ STATIC_URL = '/static/'
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_DIRS = os.path.join(BASE_DIR, 'static')
+#STATICFILES_DIRS = os.path.join(BASE_DIR, 'static')
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-
 ]
+#STATICFILES_DIRS = [
+    #BASE_DIR / "static",  # این مسیر باید به پوشه static شما اشاره کند
+#]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
