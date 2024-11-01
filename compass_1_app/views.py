@@ -7,7 +7,7 @@ from django.conf import settings
 
 def compass_view(request):
         # فرض کنیم این عدد از جایی محاسبه شده است
-    needle_rotation = 100
+    needle_rotation = 200
     context = {
         'needle_rotation': needle_rotation,
     }
