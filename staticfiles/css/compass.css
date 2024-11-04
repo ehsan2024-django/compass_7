@@ -125,6 +125,32 @@ body, html {
     border-right: 10px solid transparent;
     border-bottom: 20px solid #ff4136;
 }
+.datetime-container {
+    position: absolute;
+    top: -250px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    direction: ltr; /* تغییر به چپ به راست برای متن انگلیسی */
+}
+
+/* استایل جداگانه برای time */
+#current-time {
+    display: block;
+    margin: 5px 0;
+    font-size: 30px; /* سایز بزرگتر برای ساعت */
+}
+
+/* استایل جداگانه برای date */
+#current-date {
+    display: block;
+    margin: 5px 0;
+    font-size: 24px; /* سایز کوچکتر برای تاریخ */
+}
 
 .search-container {
     position: absolute;
@@ -168,6 +194,23 @@ body, html {
     width: 20px;
     height: 20px;
 }
+.city-name {
+    display: none;
+    background-color: rgba(248, 249, 250, 0.9);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-align: center;
+    color: rgb(15, 4, 4);
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+}
+
+.city-name.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
 
 .coordinates {
     display: none;
@@ -207,6 +250,27 @@ body, html {
     background-color: #f5f5f5;
 }
 
+.sun-info {
+    color: white;
+    font-size: 24px; /* افزایش سایز فونت از 16px به 24px */
+    font-weight: bold; /* اضافه کردن حالت ضخیم */
+    margin: 10px 0; /* افزایش فاصله بین خطوط */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.4); /* تقویت سایه برای خوانایی بهتر */
+    direction: rtl;
+}
+
+.sun-info-container {
+    position: absolute;
+    bottom: -200px; /* کمی پایین‌تر بردن برای فضای بیشتر */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.2); /* افزودن پس‌زمینه نیمه‌شفاف برای خوانایی بهتر */
+    padding: 10px; /* اضافه کردن پدینگ */
+    border-radius: 10px; /* گرد کردن گوشه‌ها */
+    backdrop-filter: blur(5px); /* افزودن افکت بلور به پس‌زمینه */
+}
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
