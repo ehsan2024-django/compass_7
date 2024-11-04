@@ -1,8 +1,12 @@
 from django.shortcuts import render
 import pandas as pd
-from django.http import JsonResponse
 import os
 from django.conf import settings
+from django.http import JsonResponse
+from datetime import datetime
+import ephem
+import pytz
+from math import degrees
 
 
 def compass_view(request):
@@ -12,6 +16,62 @@ def compass_view(request):
         'needle_rotation': needle_rotation,
     }
     return render(request, 'compass.html',context)
+
+def calculate_sun_position(request):
+    # دریافت نام شهر از درخواست
+    city_name = request.GET.get('city', '')
+    
+    # دیکشنری شهرها و مختصات آنها
+    CITIES = {
+        'tehran': {'lat': '35.6892', 'lon': '51.3890', 'elevation': 1189},
+        'mashhad': {'lat': '36.2605', 'lon': '59.6168', 'elevation': 999},
+        'isfahan': {'lat': '32.6546', 'lon': '51.6680', 'elevation': 1574},
+        'shiraz': {'lat': '29.5926', 'lon': '52.5836', 'elevation': 1484},
+        'tabriz': {'lat': '38.0962', 'lon': '46.2738', 'elevation': 1351}
+    }
+    
+    # بررسی وجود شهر در لیست
+    city = CITIES.get(city_name.lower())
+    if not city:
+        return JsonResponse({'error': 'City not found'}, status=404)
+    
+    try:
+        # تنظیم موقعیت ناظر
+        observer = ephem.Observer()
+        observer.lat = city['lat']
+        observer.lon = city['lon']
+        observer.elevation = city['elevation']
+        
+        # تنظیم زمان فعلی
+        tehran_tz = pytz.timezone('Asia/Tehran')
+        current_time = datetime.now(tehran_tz)
+        observer.date = current_time
+        
+        # محاسبه موقعیت خورشید
+        sun = ephem.Sun()
+        sun.compute(observer)
+        
+        # تبدیل زاویه‌ها به درجه
+        azimuth = degrees(float(sun.az))
+        altitude = degrees(float(sun.alt))
+        
+        # برگرداندن نتایج
+        return JsonResponse({
+            'success': True,
+            'city': city_name,
+            'datetime': current_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'azimuth': round(azimuth, 2),  # سمت خورشید
+            'altitude': round(altitude, 2), # ارتفاع خورشید
+            'coordinates': {
+                'latitude': city['lat'],
+                'longitude': city['lon']
+            }
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'error': str(e)
+        }, status=500)
 
 def get_city_coordinates(city_name):
     # مسیر جدید فایل اکسل در پوشه static سطح پروژه
