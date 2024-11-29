@@ -4,7 +4,9 @@ const cities = [
     { label: "مشهد", value: "mashhad", lat: 36.2605, lng: 59.6168 },
     { label: "اصفهان", value: "isfahan", lat: 32.6546, lng: 51.6680 },
     { label: "شیراز", value: "shiraz", lat: 29.5926, lng: 52.5836 },
-    { label: "تبریز", value: "tabriz", lat: 38.0962, lng: 46.2738 }
+    { label: "تبریز", value: "tabriz", lat: 38.0962, lng: 46.2738 },
+    { label: "ارومیه", value: "urmia", lat: 37.5498, lng: 45.0786 },
+    { label: "قائم شهر", value: "ghaemshahr", lat: 36.4635, lng: 52.8578 }
 ];
 
 $(document).ready(function() {
@@ -31,6 +33,7 @@ $(document).ready(function() {
 
                         // چرخاندن عقربه به سمت خورشید
                         $(".needle").css("transform", `translateX(-50%) rotate(${response.azimuth}deg)`);
+                        $('.qibla-needle').css("transform", `translateX(-50%) rotate(${response.qibla_angle}deg)`);
                     },
                     error: function(xhr, status, error) {
                         console.error("Error:", error);
@@ -42,6 +45,8 @@ $(document).ready(function() {
             }
         }
     });
+
+
 
     // بروزرسانی ساعت و تاریخ
     function updateDateTime() {

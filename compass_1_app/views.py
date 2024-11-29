@@ -18,6 +18,16 @@ def compass_view(request):
     return render(request, 'compass.html',context)
 
 def calculate_sun_position(request):
+    # دیکشنری زوایای قبله برای شهرهای مختلف
+    QIBLA_ANGLES = {
+        'tehran': 218,
+        'mashhad': 234,
+        'isfahan': 226,
+        'shiraz': 237,
+        'tabriz': 200,
+        'urmia': 197,
+        'ghaemshahr': 220.57
+    }
     # دریافت نام شهر از درخواست
     city_name = request.GET.get('city', '')
     
@@ -27,7 +37,9 @@ def calculate_sun_position(request):
         'mashhad': {'lat': '36.2605', 'lon': '59.6168', 'elevation': 999},
         'isfahan': {'lat': '32.6546', 'lon': '51.6680', 'elevation': 1574},
         'shiraz': {'lat': '29.5926', 'lon': '52.5836', 'elevation': 1484},
-        'tabriz': {'lat': '38.0962', 'lon': '46.2738', 'elevation': 1351}
+        'tabriz': {'lat': '38.0962', 'lon': '46.2738', 'elevation': 1351},
+        'urmia': {'lat': '37.5498', 'lon': '45.0786', 'elevation': 1351},
+        'ghaemshahr': {'lat': '36.4635', 'lon': '52.8578', 'elevation': 1351}
     }
     
     # بررسی وجود شهر در لیست
@@ -54,6 +66,11 @@ def calculate_sun_position(request):
         # تبدیل زاویه‌ها به درجه
         azimuth = degrees(float(sun.az))
         altitude = degrees(float(sun.alt))
+          
+        # دریافت زاویه قبله برای شهر
+        qibla_angle = QIBLA_ANGLES.get(city_name.lower(), 100)
+        #print("aaaaaa",qibla_angle)
+        
         
         # برگرداندن نتایج
         return JsonResponse({
@@ -62,6 +79,7 @@ def calculate_sun_position(request):
             'datetime': current_time.strftime('%Y-%m-%d %H:%M:%S'),
             'azimuth': round(azimuth, 2),  # سمت خورشید
             'altitude': round(altitude, 2), # ارتفاع خورشید
+            'qibla_angle': qibla_angle,  # زاویه قبله
             'coordinates': {
                 'latitude': city['lat'],
                 'longitude': city['lon']

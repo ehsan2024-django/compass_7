@@ -7,6 +7,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         gcc \
         python3-dev \
+        libffi-dev \
         && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -16,8 +17,10 @@ RUN pip install --upgrade pip && \
 
 COPY requirements.txt .
 
+# Install dependencies one by one with verbose output
 RUN pip install --verbose Django==5.1.2 && \
     pip install --verbose asgiref==3.7.2 && \
+    pip install --verbose ephem==4.1.6 && \
     pip install --verbose et_xmlfile==2.0.0 && \
     pip install --verbose gunicorn==23.0.0 && \
     pip install --verbose numpy==1.26.4 && \
@@ -30,7 +33,6 @@ RUN pip install --verbose Django==5.1.2 && \
     pip install --verbose sqlparse==0.5.1 && \
     pip install --verbose tzdata==2024.1 && \
     pip install --verbose whitenoise==6.7.0
-
 COPY . .
 
 RUN python manage.py collectstatic --noinput
@@ -39,3 +41,4 @@ EXPOSE 8000
 
 # تغییر این خط با توجه به نام پروژه شما
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "compass_1_django.wsgi:application"]
+
