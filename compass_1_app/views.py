@@ -29,8 +29,12 @@ def calculate_sun_position(request):
         'ghaemshahr': 220.57
     }
     # دریافت نام شهر از درخواست
+    #city_name = request.GET.get('city', '')
+      # دریافت نام شهر و نوع جهت‌یابی (خورشید/ماه/ستاره) از درخواست
     city_name = request.GET.get('city', '')
-    
+    navigation_type = request.GET.get('type', 'sun')  # پیش‌فرض خورشید
+    print(f"Received request for city: {city_name}")
+    city_name = 'tehran'
     # دیکشنری شهرها و مختصات آنها
     CITIES = {
         'tehran': {'lat': '35.6892', 'lon': '51.3890', 'elevation': 1189},
@@ -41,6 +45,7 @@ def calculate_sun_position(request):
         'urmia': {'lat': '37.5498', 'lon': '45.0786', 'elevation': 1351},
         'ghaemshahr': {'lat': '36.4635', 'lon': '52.8578', 'elevation': 1351}
     }
+
     
     # بررسی وجود شهر در لیست
     city = CITIES.get(city_name.lower())
@@ -49,6 +54,8 @@ def calculate_sun_position(request):
     
     try:
         # تنظیم موقعیت ناظر
+        print("ok")
+        print(f"Received request for city: {city_name}")
         observer = ephem.Observer()
         observer.lat = city['lat']
         observer.lon = city['lon']
@@ -62,7 +69,7 @@ def calculate_sun_position(request):
         # محاسبه موقعیت خورشید
         sun = ephem.Sun()
         sun.compute(observer)
-        
+        print("ok")
         # تبدیل زاویه‌ها به درجه
         azimuth = degrees(float(sun.az))
         altitude = degrees(float(sun.alt))
@@ -71,7 +78,7 @@ def calculate_sun_position(request):
         qibla_angle = QIBLA_ANGLES.get(city_name.lower(), 100)
         #print("aaaaaa",qibla_angle)
         
-        
+        print("ok")
         # برگرداندن نتایج
         return JsonResponse({
             'success': True,

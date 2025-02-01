@@ -13,19 +13,39 @@
       rel="stylesheet"
     />
   </head>
-  <body dir="rtl" class="m-0 p-0 box-border bg-gray-900">
-    <header
-      class="w-full bg-purple-600 p-3 text-white flex items-center justify-between"
-    >
-      <div class="flex items-center">
-        <i class="fas fa-bars ml-2 cursor-pointer"></i>
-        <p>راه بلد</p>
+  <body dir="rtl" class="m-0 p-0 box-border bg-gray-500">
+    <div class="relative">
+      <header class="w-full bg-purple-600 p-3 text-white flex items-center justify-between">
+        <div class="flex items-center">
+          <i class="fas fa-bars ml-2 cursor-pointer" id="menuToggle"></i>
+          <p>یولجو</p>
+        </div>
+        <div class="flex items-center">
+          <i class="fa-regular fa-message ml-4 cursor-pointer"></i>
+          <i class="fas fa-ellipsis-v cursor-pointer"></i>
+        </div>
+      </header>
+
+      <!-- منوی کشویی -->
+      <div id="dropdown" class="menu absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-purple-100">
+          <i class="fas fa-home ml-2"></i>
+          صفحه اصلی
+        </a>
+        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-purple-100">
+          <i class="fas fa-compass ml-2"></i>
+          قطب‌نما
+        </a>
+        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-purple-100">
+          <i class="fas fa-cog ml-2"></i>
+          تنظیمات
+        </a>
+        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-purple-100">
+          <i class="fas fa-sign-out-alt ml-2"></i>
+          خروج
+        </a>
       </div>
-      <div class="flex items-center">
-        <i class="fa-regular fa-message ml-4 cursor-pointer"></i>
-        <i class="fas fa-ellipsis-v cursor-pointer"></i>
-      </div>
-    </header>
+    </div>
     <main>
       <article
         class="w-full flex items-center justify-between bg-purple-400 text-white p-3"

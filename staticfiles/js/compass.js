@@ -1,4 +1,16 @@
+const menuToggle = document.getElementById('menuToggle');
+const dropdown = document.getElementById('dropdown');
 
+menuToggle.addEventListener('click', (event) => {
+    dropdown.classList.toggle('active');
+    event.stopPropagation();
+});
+
+document.addEventListener('click', (event) => {
+    if (!event.target.closest('#menuToggle') && !event.target.closest('#dropdown')) {
+        dropdown.classList.remove('active');
+    }
+});
 
 // تابع برای ایجاد پیشنهادات اتوکامپلیت
 function convertToPersianNumbers(input) {
@@ -204,34 +216,11 @@ if (window.DeviceOrientationEvent) {
 }
 
 function calculateQibla(lat, lon) {
-  const deltaLon = (qiblaLon - lon) * (Math.PI / 180);
-  const latRad = lat * (Math.PI / 180);
-  const qiblaLatRad = qiblaLat * (Math.PI / 180);
-
-  const y = Math.sin(deltaLon) * Math.cos(qiblaLatRad);
-  const x =
-    Math.cos(latRad) * Math.sin(qiblaLatRad) -
-    Math.sin(latRad) * Math.cos(qiblaLatRad) * Math.cos(deltaLon);
-
-  let angle = Math.atan2(y, x) * (180 / Math.PI);
-  return (angle + 360) % 360;
+  return 20;
 }
 
 function calculateMoonQibla(lat, lon) {
-  const moonLat = 0; // مختصات تقریبی ماه
-  const moonLon = 0; // مختصات تقریبی ماه
-
-  const deltaLon = (moonLon - lon) * (Math.PI / 180);
-  const latRad = lat * (Math.PI / 180);
-  const moonLatRad = moonLat * (Math.PI / 180);
-
-  const y = Math.sin(deltaLon) * Math.cos(moonLatRad);
-  const x =
-    Math.cos(latRad) * Math.sin(moonLatRad) -
-    Math.sin(latRad) * Math.cos(moonLatRad) * Math.cos(deltaLon);
-
-  let angle = Math.atan2(y, x) * (180 / Math.PI);
-  return (angle + 360) % 360;
+  return 90;
 }
 
 function updateNeedles() {
@@ -244,32 +233,45 @@ function updateNeedles() {
   directions.style.transform = `rotate(${-deviceOrientation}deg)`;
 }
 console.log('object')
-function updateQibla(type) {
+async function updateQibla(type) {
   const cityInput = document.getElementById("city").value;
   const city = cities[cityInput];
   if (city) {
-    if (type === "sun") {
-      qiblaDirection = calculateQibla(city.lat, city.lon);
-      document.getElementById("sun-q").classList.remove("hidden");
-      document.getElementById("moon-q").classList.add("hidden");
-      document.getElementById("star-q").classList.add("hidden");
-      setTimeout(()=> {
-        document.getElementById('modal').classList.add('flex')
-      },1000)
-    } else if (type === "moon") {
-      qiblaDirection = calculateMoonQibla(city.lat, city.lon);
-      document.getElementById("moon-q").classList.remove("hidden");
-      document.getElementById("sun-q").classList.add("hidden");
-      document.getElementById("star-q").classList.add("hidden");
-      alert(`زاویه‌ی قبله برای ${cityInput} بر اساس ماه محاسبه شد.`);
-    } else if (type === "star") {
-      qiblaDirection = calculateQibla(city.lat, city.lon);
-      document.getElementById("star-q").classList.remove("hidden");
-      document.getElementById("sun-q").classList.add("hidden");
-      document.getElementById("moon-q").classList.add("hidden");
-      alert(`زاویه‌ی قبله برای ${cityInput} بر اساس ستاره محاسبه شد.`);
+    try {
+      // ارسال درخواست به views.py
+      const response = await fetch(`/calculate_sun_position/?city=${cityInput.toLowerCase()}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        // ذخیره زاویه محاسبه شده
+        qiblaDirection = data.qibla_angle;
+        
+        // مدیریت نمایش آیکون‌ها
+        if (type === "sun") {
+          document.getElementById("sun-q").classList.remove("hidden");
+          document.getElementById("moon-q").classList.add("hidden");
+          document.getElementById("star-q").classList.add("hidden");
+          setTimeout(() => {
+            document.getElementById('modal').classList.add('flex')
+          }, 1000);
+        } else if (type === "moon") {
+          document.getElementById("moon-q").classList.remove("hidden");
+          document.getElementById("sun-q").classList.add("hidden");
+          document.getElementById("star-q").classList.add("hidden");
+          alert(`زاویه‌ی قبله برای ${cityInput} بر اساس ماه محاسبه شد.`);
+        } else if (type === "star") {
+          document.getElementById("star-q").classList.remove("hidden");
+          document.getElementById("sun-q").classList.add("hidden");
+          document.getElementById("moon-q").classList.add("hidden");
+          alert(`زاویه‌ی قبله برای ${cityInput} بر اساس ستاره محاسبه شد.`);
+        }
+        
+        updateNeedles();
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert("خطا در دریافت اطلاعات از سرور");
     }
-    updateNeedles();
   } else {
     alert("شهر انتخابی معتبر نیست. لطفاً یک شهر معتبر انتخاب کنید.");
   }

@@ -164,3 +164,11 @@ button {
 .suggestion-item:hover {
   background-color: #f0f0f0;
 }
+
+.menu {
+  display: none;
+  transition: all 0.3s ease;
+}
+.menu.active {
+  display: block;
+}
