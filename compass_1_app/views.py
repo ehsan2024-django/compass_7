@@ -33,7 +33,6 @@ def calculate_sun_position(request):
       # دریافت نام شهر و نوع جهت‌یابی (خورشید/ماه/ستاره) از درخواست
     city_name = request.GET.get('city', '')
     navigation_type = request.GET.get('type', 'sun')  # پیش‌فرض خورشید
-    print(f"Received request for city: {city_name}")
     city_name = 'tehran'
     # دیکشنری شهرها و مختصات آنها
     CITIES = {
@@ -54,8 +53,10 @@ def calculate_sun_position(request):
     
     try:
         # تنظیم موقعیت ناظر
-        print("ok")
-        print(f"Received request for city: {city_name}")
+ 
+        print(f"Received: city={city_name}, type={navigation_type}") 
+        print(f"Received: city={city_name}, type={navigation_type}") 
+        print(f"Received: city={city_name}, type={navigation_type}") 
         observer = ephem.Observer()
         observer.lat = city['lat']
         observer.lon = city['lon']
@@ -67,18 +68,27 @@ def calculate_sun_position(request):
         observer.date = current_time
         
         # محاسبه موقعیت خورشید
-        sun = ephem.Sun()
-        sun.compute(observer)
-        print("ok")
+        #sun = ephem.Sun()
+        #sun.compute(observer)
+
+                # انتخاب جسم آسمانی بر اساس نوع جهت‌یابی
+        if navigation_type == 'moon':
+            celestial_body = ephem.Moon()
+        elif navigation_type == 'star':
+            celestial_body = ephem.Star()  # یا هر ستاره خاص دیگری
+        else:  # پیش‌فرض خورشید
+            celestial_body = ephem.Sun()
+
+        celestial_body.compute(observer)
+        
         # تبدیل زاویه‌ها به درجه
-        azimuth = degrees(float(sun.az))
-        altitude = degrees(float(sun.alt))
-          
+        azimuth = degrees(float(celestial_body.az))
+        altitude = degrees(float(celestial_body.alt))
+        print(f"Received: AZIMUTH={azimuth}") 
         # دریافت زاویه قبله برای شهر
         qibla_angle = QIBLA_ANGLES.get(city_name.lower(), 100)
         #print("aaaaaa",qibla_angle)
-        
-        print("ok")
+
         # برگرداندن نتایج
         return JsonResponse({
             'success': True,

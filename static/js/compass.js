@@ -142,6 +142,8 @@ setInterval(updateDateTime, 1000);
 // })
 let paramE = 'sun'
 function showIcon(icon, color = 'text-yellow-400') {
+  console.log("icon changed to:", icon);
+  console.log("paramE changed to:", paramE);
   // ابتدا تمام آیکون‌ها رو مخفی می‌کنیم
   document.getElementById("sun").classList.add("hidden1");
   document.getElementById("moon").classList.add("hidden1");
@@ -205,6 +207,7 @@ const cities = {
 
 let deviceOrientation = 0;
 let qiblaDirection = 0;
+let azimuthValue = 0; // متغیر جدید
 
 if (window.DeviceOrientationEvent) {
   window.addEventListener("deviceorientation", (event) => {
@@ -224,13 +227,19 @@ function calculateMoonQibla(lat, lon) {
 }
 
 function updateNeedles() {
-  const greenNeedle = document.querySelector(".qibla-needle");
   const directions = document.querySelector(".directions");
+  const greenNeedle = document.querySelector(".qibla-needle");
+  const redNeedle = document.querySelector(".fixed-needle");
 
-  greenNeedle.style.transform = `translateX(-50%) translateY(-100%) rotate(${
-    qiblaDirection - deviceOrientation
-  }deg)`;
-  directions.style.transform = `rotate(${-deviceOrientation}deg)`;
+  // عقربه قرمز ثابت می‌ماند (رو به بالا)
+  redNeedle.style.transform = `translateX(-50%) translateY(-100%)`;
+
+  // عقربه سبز (قبله) بر اساس اختلاف زاویه قبله و azimuth می‌چرخد
+  greenNeedle.style.transform = `translateX(-50%) translateY(-100%) rotate(${qiblaDirection - azimuthValue}deg)`;
+
+  // دایره NEWS باید طوری بچرخد که N در راستای شمال باشد
+  // وقتی خط قرمز به سمت جرم سماوی است (azimuth)، باید N شمال را نشان دهد
+  directions.style.transform = `rotate(${-azimuthValue}deg)`;
 }
 console.log('object')
 async function updateQibla(type) {
@@ -238,14 +247,18 @@ async function updateQibla(type) {
   const city = cities[cityInput];
   if (city) {
     try {
-      // ارسال درخواست به views.py
-      const response = await fetch(`/calculate_sun_position/?city=${cityInput.toLowerCase()}`);
+      // ارسال درخواست به views.py با دو پارامتر city و type
+      const response = await fetch(`/calculate_sun_position/?city=${cityInput.toLowerCase()}&type=${type}`);
       const data = await response.json();
       
       if (data.success) {
         // ذخیره زاویه محاسبه شده
         qiblaDirection = data.qibla_angle;
-        
+        console.log("icon changed to:", qiblaDirection);
+                // نمایش مقادیر azimuth و altitude
+        document.getElementById("azimuth-text").textContent = `سمت: ${data.azimuth} درجه`;
+        document.getElementById("altitude-text").textContent = `ارتفاع: ${data.altitude} درجه`;
+        azimuthValue = data.azimuth;
         // مدیریت نمایش آیکون‌ها
         if (type === "sun") {
           document.getElementById("sun-q").classList.remove("hidden");
