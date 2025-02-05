@@ -1,3 +1,4 @@
+console.log("compass.js loaded!");
 const menuToggle = document.getElementById('menuToggle');
 const dropdown = document.getElementById('dropdown');
 
@@ -192,31 +193,33 @@ const qiblaLat = 21.4225;
 const qiblaLon = 39.8262;
 
 const cities = {
-  تهران: { lat: 35.6892, lon: 51.389 },
-  مشهد: { lat: 36.2605, lon: 59.6168 },
-  شیراز: { lat: 29.619, lon: 52.5387 },
-  اصفهان: { lat: 32.6613, lon: 51.6804 },
-  تبریز: { lat: 38.0962, lon: 46.2738 },
-  قم: { lat: 34.6399, lon: 50.8759 },
-  اهواز: { lat: 31.3183, lon: 48.6706 },
-  کرمان: { lat: 30.2839, lon: 57.0834 },
-  همدان: { lat: 34.7992, lon: 48.5146 },
-  یزد: { lat: 31.8974, lon: 54.3569 },
-  شاهرود: { lat: 36.418, lon: 54.9763 },
-};
+  تهران: { lat: 35.6892, lon: 51.389, en_name: 'tehran' },
+  مشهد: { lat: 36.2605, lon: 59.6168, en_name: 'mashhad' },
+  شیراز: { lat: 29.619, lon: 52.5387, en_name: 'shiraz' },
+  اصفهان: { lat: 32.6613, lon: 51.6804, en_name: 'isfahan' },
+  تبریز: { lat: 38.0962, lon: 46.2738, en_name: 'tabriz' },
+  قم: { lat: 34.6399, lon: 50.8759, en_name: 'qom' },
+  اهواز: { lat: 31.3183, lon: 48.6706, en_name: 'ahvaz' },
+  کرمان: { lat: 30.2839, lon: 57.0834, en_name: 'kerman' },
+  همدان: { lat: 34.7992, lon: 48.5146, en_name: 'hamedan' },
+  بابلسر: { lat: 36.418, lon: 54.9763, en_name: 'shahrood' },
+  یزد: { lat: 31.8974, lon: 54.3569, en_name: 'yazd' },
+  شاهرود: { lat: 36.418, lon: 54.9763, en_name: 'shahrood' },
+  قائمشهر: { lat: 36.4635, lon: 52.8578, en_name: 'ghaemshahr' }
+ };
 
 let deviceOrientation = 0;
 let qiblaDirection = 0;
 let azimuthValue = 0; // متغیر جدید
 
-if (window.DeviceOrientationEvent) {
-  window.addEventListener("deviceorientation", (event) => {
-    deviceOrientation = event.alpha;
-    updateNeedles();
-  });
-} else {
-  alert("مرورگر شما از قطب‌نما پشتیبانی نمی‌کند.");
-}
+//if (window.DeviceOrientationEvent) {
+  //window.addEventListener("deviceorientation", (event) => {
+  //deviceOrientation = event.alpha;
+  //updateNeedles();
+  //});
+//} else {
+  //alert("مرورگر شما از قطب‌نما پشتیبانی نمی‌کند.");
+//}
 
 function calculateQibla(lat, lon) {
   return 20;
@@ -245,12 +248,17 @@ console.log('object')
 async function updateQibla(type) {
   const cityInput = document.getElementById("city").value;
   const city = cities[cityInput];
+  console.log("City Input (Persian):", cityInput);
+  console.log("Input:", cityInput.split('')); 
+  console.log("City Object:", city);
   if (city) {
     try {
-      // ارسال درخواست به views.py با دو پارامتر city و type
-      const response = await fetch(`/calculate_sun_position/?city=${cityInput.toLowerCase()}&type=${type}`);
+      // از en_name استفاده می‌کنیم
+      const cityEnglishName = city.en_name || cityInput.toLowerCase();
+      console.log("City English Name:", cityEnglishName);
+      const response = await fetch(`/calculate_sun_position/?city=${cityEnglishName}&type=${type}`);
       const data = await response.json();
-      
+      // ...
       if (data.success) {
         // ذخیره زاویه محاسبه شده
         qiblaDirection = data.qibla_angle;
@@ -292,7 +300,7 @@ async function updateQibla(type) {
 document.getElementById('close-s').addEventListener('click',()=> {
   document.getElementById('star-modal').classList.add('hidden');
 })
-console.log('dmdk')
+console.log('dmmmmdk')
 function setStar(name){
   let cl;
   if(name == 'qotb'){

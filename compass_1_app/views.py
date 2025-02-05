@@ -33,7 +33,9 @@ def calculate_sun_position(request):
       # دریافت نام شهر و نوع جهت‌یابی (خورشید/ماه/ستاره) از درخواست
     city_name = request.GET.get('city', '')
     navigation_type = request.GET.get('type', 'sun')  # پیش‌فرض خورشید
-    city_name = 'tehran'
+    print("Received city name (raw):", city_name)
+    print("Received city name (decoded):", request.GET.get('city', '').encode().decode('utf-8'))
+    #city_name = 'tehran'
     # دیکشنری شهرها و مختصات آنها
     CITIES = {
         'tehran': {'lat': '35.6892', 'lon': '51.3890', 'elevation': 1189},
@@ -42,7 +44,10 @@ def calculate_sun_position(request):
         'shiraz': {'lat': '29.5926', 'lon': '52.5836', 'elevation': 1484},
         'tabriz': {'lat': '38.0962', 'lon': '46.2738', 'elevation': 1351},
         'urmia': {'lat': '37.5498', 'lon': '45.0786', 'elevation': 1351},
-        'ghaemshahr': {'lat': '36.4635', 'lon': '52.8578', 'elevation': 1351}
+        'shahr': {'lat': '36.4635', 'lon': '52.8578', 'elevation': 1351},
+        'kerman': {'lat': '30.2839', 'lon': '57.0834', 'elevation': 1351},
+        'babolsar': {'lat': '36.7005', 'lon': '52.6502', 'elevation': 1351},
+        'ghaemshahr': {'lat': '36.7005', 'lon': '52.6502', 'elevation': 1351}
     }
 
     
